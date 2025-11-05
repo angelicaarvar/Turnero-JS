@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
-* {
+* { 
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -14,7 +14,7 @@ body {
     height: 100%;
 }
 
-main {
+main { 
     height: 100vh;
 }
 
@@ -22,7 +22,7 @@ a {
     text-decoration: none;
 }
 
-h1 {
+h1 { 
     font-family: Georgia, 'Times New Roman', Times, serif;
     color: rgb(36, 46, 161);
 }
@@ -38,13 +38,13 @@ li,
 a,
 button,
 label,
-table {
+table { 
     font-family: 'Montserrat';
     color: #000000;
     margin-bottom: 0;
 }
 
-input {
+input { 
     height: 2.5rem;
     width: 100%;
     border: 1px solid grey;
@@ -100,7 +100,7 @@ footer {
     gap: .5rem;
 }
 
-.boton {
+.boton { 
     background-color: #a7badf9d;
     color: rgb(0, 0, 0);
     border: none;
@@ -123,11 +123,11 @@ footer {
     text-decoration: underline;
 }
 
-.boton-historial-volver:hover {
+.boton-historial-volver:hover { 
     color: rgb(8, 8, 143);
 }
 
-.btn-atender-paciente:disabled {
+.btn-atender-paciente:disabled { 
     cursor: not-allowed;
     opacity: 0.5;
     box-shadow: none;
@@ -137,20 +137,20 @@ footer {
 
 /* Seccion Lista de espera */
 
-.lista-espera {
+.lista-espera { 
     display: flex;
     flex-direction: column;
     gap: .5rem;
 
 }
 
-.mensaje-cola-vacia {
+.mensaje-cola-vacia { 
     text-align: center;
     font-style: italic;
     color: rgb(128, 128, 128);
 }
 
-.card-paciente {
+.card-paciente { 
     background-color: rgb(241, 241, 241);
     opacity: 0.9;
     display: flex;
@@ -171,6 +171,8 @@ footer {
     border-radius: 0 0 10px 10px;
     border-bottom: none;
 }
+
+
 
 .hora-ingreso{
     display: flex;
@@ -346,8 +348,11 @@ footer {
 }
 
 
+
+
+
 /* Tabla de Historial */
-.pacientes-tabla {
+.pacientes-tabla { 
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
@@ -357,7 +362,6 @@ footer {
     background-color: hsla(0, 0%, 0%, 0.781);
     color: rgb(236, 236, 236);
     font-weight: 400;
-
 }
 
 td,
