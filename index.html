@@ -6,7 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Curso JavaScript</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!--Script en HEAD SIEMPRE, tipo norma-->
+    <script defer src="./js/main.js"></script>
     <script defer src="./js/main.js"></script> <!--defer carga el JS al finallll recien-->
 
     <link rel="stylesheet" href="./styles/styles.css">
@@ -14,13 +17,9 @@
 
 <body>
     <header>
-        <div>
-            <a href="index.html" title="Inicio">
-                <h1>Clínica médica</h1>
-            </a>
-        </div>
-
-
+        <a href="index.html" title="Inicio">
+            <h1>Clínica médica</h1>
+        </a>
     </header>
 
     <main>
@@ -30,95 +29,27 @@
                 <h2>Gestor de pacientes</h2>
 
                 <div class="boton-container">
-
-                    <button class="boton agregar-paciente" id="btn-abrir-modal-agregar-paciente">Agregar
+                    <button class="boton btn-agregar-paciente" id="btn-abrir-modal-agregar-paciente"
+                        onclick="agregarPaciente()">Agregar
                         paciente</button>
 
-                    <button id="btn-abrir-modal-atender-paciente" class="boton btn-atender-paciente" disabled>Atender
+                    <button id="btn-abrir-modal-atender-paciente" class="boton btn-atender-paciente"
+                        onclick="atenderPaciente()">Atender
                         paciente</button>
                 </div>
-
-
-
-                <!-- Agrego modal porque lo descubri en la herramienta que nos dieron en el curso de Desarrollo Web, W3Schools -->
-                <div id="modal-agregar-paciente" class="modal">
-
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <span class="close">&times;</span>
-                            <h2>Agregar paciente</h2>
-                            <p>Ingrese los datos del paciente para agregarlo a la cola de espera.</p>
-                        </div>
-
-                        <div class="modal-body">
-                            <form id="formulario-paciente">
-                                <div class="elemento-formulario">
-                                    <label for="formulario-paciente-nombre">Nombre completo</label>
-                                    <input type="text" id="formulario-paciente-nombre" name="nombre"
-                                        placeholder="Ingrese el nombre" required>
-                                    <p id="error-msj-nombre" class="mensaje-error">⚠ Nombre no puede estar vacio</p>
-                                </div>
-
-                                <div class="elemento-formulario">
-                                    <label for="formulario-paciente-dni">DNI</label>
-                                    <input type="text" id="formulario-paciente-dni" name="dni"
-                                        placeholder="Ingrese número de DNI sin puntos ni espacios" required>
-                                    <p id="error-msj-dni" class="mensaje-error">⚠ Formato de DNI invalido</p>
-                                </div>
-
-
-                                <div class="elemento-formulario">
-                                    <label for="formulario-paciente-motivo">Motivo de consulta:</label>
-                                    <input type="text" id="formulario-paciente-motivo" name="motivo"
-                                        placeholder="Ingrese el motivo de consulta" required>
-                                    <p id="error-msj-motivo" class="mensaje-error">⚠ Motivo no puede estar vacio</p>
-                                </div>
-
-
-                            </form>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button id="btn-confirmar-paciente" class="boton">Confirmar</button>
-                        </div>
-
-                    </div>
-                </div>
-
-
-                <div id="modal-atender-paciente" class="modal">
-
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <span class="close">&times;</span>
-                            <h2>Atención Clinica</h2>
-                        </div>
-
-                        <div class="modal-body">
-                            <p>¿Atender paciente: <span id="nombre-paciente-atender"></span>?</p>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button id="btn-atender-paciente" class="boton">Confirmar</button>
-                        </div>
-
-                    </div>
-                </div>
-
 
                 <div>
                     <a href="pages/historial.html" class="boton-historial-volver" id="btn-historial"
-                        title="Historial de pacientes">
+                        onclick="verHistorial()" title="Historial de pacientes">
                         Historial de pacientes
                     </a>
                 </div>
+
             </section>
 
-            <section class="lista-espera" id="lista-espera">
+            <section class="lista-espera"> <!--Le saque el id lista de espera de aqui-->
                 <h2>Lista de espera</h2>
-                <div id="contenedor-card-pacientes">
+                <div id="listaPacientes"> <!-- EX contenedor-card-pacientes-->
 
                 </div>
             </section>

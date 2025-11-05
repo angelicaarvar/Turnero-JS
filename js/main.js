@@ -1,201 +1,308 @@
-// GENERALES
-let listaPacientes;
-const keyLocalStorage = "pacientes";
-const relojIconoUrl ='"http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M528 320C528 434.9 434.9 528 320 528C205.1 528 112 434.9 112 320C112 205.1 205.1 112 320 112C434.9 112 528 205.1 528 320zM64 320C64 461.4 178.6 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320zM296 184L296 320C296 328 300 335.5 306.7 340L402.7 404C413.7 411.4 428.6 408.4 436 397.3C443.4 386.2 440.4 371.4 429.3 364L344 307.2L344 184C344 170.7 333.3 160 320 160C306.7 160 296 170.7 296 184z"'
+const relojIconoUrl = '"http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M528 320C528 434.9 434.9 528 320 528C205.1 528 112 434.9 112 320C112 205.1 205.1 112 320 112C434.9 112 528 205.1 528 320zM64 320C64 461.4 178.6 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320zM296 184L296 320C296 328 300 335.5 306.7 340L402.7 404C413.7 411.4 428.6 408.4 436 397.3C443.4 386.2 440.4 371.4 429.3 364L344 307.2L344 184C344 170.7 333.3 160 320 160C306.7 160 296 170.7 296 184z"'
 
 
+// Generar ID alfanumérico único
+// function generarId() {
+//     return 'PAC-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 11);
+// }
 
-//BOTONES
-let botonAgregarPaciente = document.getElementById("btn-confirmar-paciente");
-botonAgregarPaciente.addEventListener("click", agregarPaciente);
-
-let botonConfirmarAtencion = document.getElementById("btn-atender-paciente");
-botonConfirmarAtencion.addEventListener("click", atenderPaciente);
-
-let botonAbrirModalAgregarPaciente = document.getElementById("btn-abrir-modal-agregar-paciente");
-botonAbrirModalAgregarPaciente.addEventListener("click", abrirModalAgregarPaciente)
-
-let botonAbrirModalAtenderPaciente = document.getElementById("btn-abrir-modal-atender-paciente");
-botonAbrirModalAtenderPaciente.addEventListener("click", abrirModalAtenderPaciente);
-
-let botonesCerrarModal = document.getElementsByClassName("close");
-for(let botonCerrarModal of botonesCerrarModal){
-    botonCerrarModal.addEventListener("click", cerrarModal);
+function generarId() {
+let contador = Number(localStorage.getItem('contadorId')) || 0;
+contador++;
+localStorage.setItem('contadorId', contador);
+return "PAC-" + contador;
 }
 
-// MODALES
-let modalAtenderPaciente = document.getElementById("modal-atender-paciente");
-let modalAgregarPaciente = document.getElementById("modal-agregar-paciente");
+// Obtener lista de espera
+function obtenerListaEspera() {
+    const lista = localStorage.getItem('listaEspera');
+    return lista ? JSON.parse(lista) : [];
+}
 
-// INPUTS
-let inputNombreCompleto = document.getElementById("formulario-paciente-nombre");
-let inputDni = document.getElementById("formulario-paciente-dni");
-let inputMotivo = document.getElementById("formulario-paciente-motivo");
+// Guardar lista de espera
+function guardarListaEspera(lista) {
+    localStorage.setItem('listaEspera', JSON.stringify(lista));
+}
 
-// MENSAJES DE ERROR
-const mensajeErrorDNI = document.getElementById("error-msj-dni");
-const mensajeErrorNombre = document.getElementById("error-msj-nombre");
-const mensajeErrorMotivo = document.getElementById("error-msj-motivo");
+// Obtener historial
+function obtenerHistorial() {
+    const historial = localStorage.getItem('historialPacientes');
+    return historial ? JSON.parse(historial) : [];
+}
 
-// ----------------------------------------------------------------------------
+// Guardar historial
+function guardarHistorial(historial) {
+    localStorage.setItem('historialPacientes', JSON.stringify(historial));
+}
 
-// FUNCIONES PRINCIPALES
+// Validar nombre (solo letras y espacios)
+function validarNombre(nombre) {
+    const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    return regex.test(nombre) && nombre.trim().length > 0;
+}
 
-function agregarPaciente() {
-    const nombreCompleto = inputNombreCompleto.value;
-    const dni = inputDni.value;
-    const motivo = inputMotivo.value;
+// Validar DNI (solo números, 7-8 dígitos)
+function validarDNI(dni) {
+    const regex = /^\d{7,8}$/;
+    return regex.test(dni);
+}
 
-    let formularioValido = validarFormulario(nombreCompleto, dni, motivo);
-    if(!formularioValido){
+function dniExiste(dni) {
+    const listaEspera = obtenerListaEspera();
+    return listaEspera.some(p => p.dni === dni);
+}
+
+// Renderizar lista de pacientes
+function renderizarLista() {
+
+    const lista = obtenerListaEspera();
+    const contenedor = document.getElementById('listaPacientes');
+
+    if (lista.length === 0) {
+        contenedor.innerHTML = '<div class="mensaje-cola-vacia">No hay pacientes en la lista de espera</div>';
+        return;
+    }
+    /*por que aca nmo va el else no entiendo */
+    contenedor.innerHTML = lista.map(paciente => `
+                <div class="card-paciente">
+
+                    <div class="paciente-header">
+
+                        <span class="nombre-paciente">${paciente.nombre}</span>
+
+                        <span class="paciente-hora"><svg class="reloj" xmlns=${relojIconoUrl}/> </svg> ${paciente.hora}</span>
+
+                    </div>
+
+                    <div class="paciente-info">
+
+                        <p><strong>DNI:</strong> ${paciente.dni}</p>
+                        <p><strong>Motivo:</strong> ${paciente.motivo}</p>
+                        <p><span class="tipo-guardia">${paciente.guardia}</span></p>
+
+                    </div>
+
+                    <div class="acciones-paciente-existente">
+
+                        <button class="btn-editar" onclick="editarPaciente('${paciente.id}')">Editar</button>
+                        <button class="btn-eliminar" onclick="eliminarPaciente('${paciente.id}')">Eliminar</button>
+
+                    </div>
+                </div>
+            `).join('');
+}
+
+// Agregar paciente
+function agregarPaciente(pacienteEditar = null) {
+    const esEdicion = pacienteEditar !== null;
+
+    Swal.fire({
+        title: esEdicion ? 'Editar paciente' : 'Agregar paciente',
+        html: `
+                    <div class = "swal-formulario">
+
+                        <p class = "txt-header-form">Ingrese los datos del paciente para ${esEdicion ? 'actualizar su información' : 'agregarlo a la cola de espera'}.</p>
+                        
+                        <label class="label-formulario">Nombre completo</label>
+                        <input id="nombre" class="swal2-input input-formulario" placeholder="Ingrese nombre del paciente" value="${esEdicion ? pacienteEditar.nombre : ''}">
+                        
+                        <label class="label-formulario">DNI</label>
+                        <input id="dni" class="swal2-input input-formulario" placeholder="Ingrese número de DNI sin puntos ni espacios" value="${esEdicion ? pacienteEditar.dni : ''}" ${esEdicion ? 'disabled' : ''}>
+                        
+                        <label class= "label-formulario">Motivo de consulta</label>
+                        <input id="motivo" class="swal2-input input-formulario" placeholder="Ingrese el motivo de consulta" value="${esEdicion ? pacienteEditar.motivo : ''}">
+                        
+                        <label class= "label-formulario">Guardia</label>
+                        <select id="guardia" class="swal2-input input-formulario">
+                            <option value="">Seleccione una guardia</option>
+                            <option value="Clínica - Dr. García" ${esEdicion && pacienteEditar.guardia === 'Clínica - Dr. García' ? 'selected' : ''}>Clínica - Dr. García</option>
+                            <option value="Cardiológica - Dra. Martínez" ${esEdicion && pacienteEditar.guardia === 'Cardiológica - Dra. Martínez' ? 'selected' : ''}>Cardiológica - Dra. Martínez</option>
+                            <option value="Pediátrica - Dr. López" ${esEdicion && pacienteEditar.guardia === 'Pediátrica - Dr. López' ? 'selected' : ''}>Pediátrica - Dr. López</option>
+                            <option value="Traumatológica - Dr. Rodríguez" ${esEdicion && pacienteEditar.guardia === 'Traumatológica - Dr. Rodríguez' ? 'selected' : ''}>Traumatológica - Dr. Rodríguez</option>
+                            <option value="Urgencias - Dra. Fernández" ${esEdicion && pacienteEditar.guardia === 'Urgencias - Dra. Fernández' ? 'selected' : ''}>Urgencias - Dra. Fernández</option>
+                        </select>
+                    </div>
+                `,
+        confirmButtonText: 'Confirmar',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#380fccd5',
+        cancelButtonColor: '#f84949',
+        width: '600px',
+        preConfirm: () => {
+            const nombre = document.getElementById('nombre').value.trim();
+            const dni = document.getElementById('dni').value.trim();
+            const motivo = document.getElementById('motivo').value.trim();
+            const guardia = document.getElementById('guardia').value;
+
+            // Validar campos vacíos
+            if (!nombre || !dni || !motivo || !guardia) {
+                Swal.showValidationMessage('Por favor complete todos los campos');
+                return false;
+            }
+
+            // Validar nombre (sin números)
+            if (!validarNombre(nombre)) {
+                Swal.showValidationMessage('El nombre no puede contener números ni caracteres especiales');
+                return false;
+            }
+
+            // Validar formato DNI
+            if (!validarDNI(dni)) {
+                Swal.showValidationMessage('El DNI debe contener solo números (7-8 dígitos)');
+                return false;
+            }
+
+            // Verificar DNI duplicado (solo si no es edición)
+            if (!esEdicion && dniExiste(dni)) {
+                Swal.showValidationMessage('Este DNI ya está registrado en el sistema');
+                return false;
+            }
+
+            return { nombre, dni, motivo, guardia };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const lista = obtenerListaEspera();
+
+            if (esEdicion) {
+                // Actualizar paciente existente
+                const index = lista.findIndex(p => p.id === pacienteEditar.id);
+                if (index !== -1) {
+                    lista[index] = {
+                        ...lista[index],
+                        nombre: result.value.nombre,
+                        motivo: result.value.motivo,
+                        guardia: result.value.guardia
+                    };
+                }
+            } else {
+                // Agregar nuevo paciente
+                const nuevoPaciente = {
+                    id: generarId(),
+                    nombre: result.value.nombre,
+                    dni: result.value.dni,
+                    motivo: result.value.motivo,
+                    guardia: result.value.guardia,
+                    hora: new Date().toLocaleTimeString('es-AR')
+                };
+                lista.push(nuevoPaciente);
+            }
+
+            guardarListaEspera(lista);
+            renderizarLista();
+
+            Swal.fire({
+                icon: 'success',
+                title: esEdicion ? 'Paciente actualizado' : 'Paciente agregado',
+                text: `${result.value.nombre} ha sido ${esEdicion ? 'actualizado' : 'agregado a la lista de espera'}`,
+                confirmButtonColor: '#5163c9ff'
+            });
+        }
+    });
+}
+
+// Atender paciente
+function atenderPaciente() {
+    const lista = obtenerListaEspera();
+
+    if (lista.length === 0) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Lista vacía',
+            text: 'No hay pacientes en la lista de espera',
+            confirmButtonColor: '#667eea'
+        });
         return;
     }
 
-    listaPacientes = JSON.parse(localStorage.getItem(keyLocalStorage)) || [];
+    const primerPaciente = lista[0];
 
-    listaPacientes.push({nombreCompleto, dni, motivo, horaIngreso: new Date().toLocaleTimeString(), atendido: false});
+    Swal.fire({
+        title: 'Atención Clínica',
+        html: `<p class="txt-atender-form">¿Atender paciente: <strong>${primerPaciente.nombre}</strong>?</p>`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Atender',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#667eea',
+        cancelButtonColor: '#d33'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            lista.shift();
+            guardarListaEspera(lista);
 
-    localStorage.setItem(keyLocalStorage, JSON.stringify(listaPacientes));
+            // Agregar al historial
+            const historial = obtenerHistorial();
+            historial.push({
+                ...primerPaciente,
+                fechaAtencion: new Date().toLocaleString('es-AR')
+            });
+            guardarHistorial(historial);
 
-    renderizarListaEspera();
+            renderizarLista();
 
-    modalAgregarPaciente.style.display = "none";
-}
-
-
-function atenderPaciente() {
-
-    listaPacientes = JSON.parse(localStorage.getItem(keyLocalStorage)) || [];
-
-    
-    for(let paciente of listaPacientes) {
-        if(paciente && paciente.atendido === false){
-            paciente.atendido = true;
-            break;
+            Swal.fire({
+                icon: 'success',
+                title: 'Paciente atendido',
+                text: 'Paciente registrado en el historial.',
+                confirmButtonColor: '#667eea'
+            });
         }
-    }
-
-    localStorage.setItem(keyLocalStorage, JSON.stringify(listaPacientes));
-
-    renderizarListaEspera();
-    
-    modalAtenderPaciente.style.display = "none";
-}
-
-// ----------------------------------------------------------------------------
-// FUNCION DE RENDERIZADO
-
-function renderizarListaEspera() {
-    const contenedor = document.getElementById('contenedor-card-pacientes');
-
-    const pacientesNoAtendidos = obtenerPacientesSinAtender(); 
-
-  // Limpia el contenido previo (por si se vuelve a renderizar)
-    contenedor.innerHTML = '';
-
-    if(pacientesNoAtendidos.length === 0) {
-        botonAbrirModalAtenderPaciente.disabled = true;
-        contenedor.innerHTML = '<p class="mensaje-cola-vacia">No hay pacientes en espera.</p>';
-
-    } else {
-    botonAbrirModalAtenderPaciente.disabled = false;
-    pacientesNoAtendidos.forEach((paciente) => {
-        const card = document.createElement('div');
-        card.classList.add('card-paciente');
-
-        card.innerHTML = `
-            <div class="informacion-paciente">
-                <h3 class="nombre-paciente">${paciente.nombreCompleto}</h3>
-                <p class="dni-paciente">DNI: ${paciente.dni}</p>
-            </div>
-            <div class="hora-paciente">
-                <p class="hora-ingreso"><svg class="reloj" xmlns=${relojIconoUrl}/></svg>${paciente.horaIngreso}</p>
-            </div>
-            `;
-
-        // Agregamos la card al contenedor
-        contenedor.appendChild(card);
     });
-    } 
 }
 
-// ----------------------------------------------------------------------------
-// APERTURA Y CIERRE DE MODALES
+// Editar paciente
+function editarPaciente(id) {
+    const lista = obtenerListaEspera();
+    const paciente = lista.find(p => p.id === id);
 
-function abrirModalAgregarPaciente(){
-    inputNombreCompleto.value = '';
-    inputDni.value = '';
-    inputMotivo.value = '';
-
-    mensajeErrorNombre.style.display = "none";
-    mensajeErrorDNI.style.display = "none";
-    mensajeErrorMotivo.style.display = "none";
-
-    inputNombreCompleto.classList.remove("valor-ingresado-erroneo")
-    inputDni.classList.remove("valor-ingresado-erroneo")
-    inputMotivo.classList.remove("valor-ingresado-erroneo")
-
-    modalAgregarPaciente.style.display = "block"
-}
-
-function abrirModalAtenderPaciente(){
-    modalAtenderPaciente.style.display = "block";
-
-    const nombrePacienteAtender = document.getElementById("nombre-paciente-atender");
-    nombrePacienteAtender.innerHTML = obtenerPacientesSinAtender()[0].nombreCompleto;
-}
-
-
-function cerrarModal(){
-    modalAtenderPaciente.style.display = "none";
-    modalAgregarPaciente.style.display = "none";
-}
-
-// ----------------------------------------------------------------------------
-// FUNCIONES SECUNDARIAS
-
-function validarFormulario(nombreCompleto, dni, motivo) {
-
-    let valido = true
-
-    if (dni.length != 8 || isNaN(dni) || parseInt(dni) <= 0) {
-        valido = false;
-        inputDni.classList.add('valor-ingresado-erroneo');
-        mensajeErrorDNI.style.display = "block";
-
-    } else{
-        inputDni.classList.remove('valor-ingresado-erroneo');
-        mensajeErrorDNI.style.display = "none"
+    if (paciente) {
+        agregarPaciente(paciente);
     }
-
-    if(nombreCompleto === ""){
-        valido = false;
-        inputNombreCompleto.classList.add('valor-ingresado-erroneo');
-        mensajeErrorNombre.style.display = "block";
-    }else{
-        inputNombreCompleto.classList.remove('valor-ingresado-erroneo');
-        mensajeErrorNombre.style.display = "none";
-    }
-
-    if(motivo === ""){
-        valido = false;
-        inputMotivo.classList.add('valor-ingresado-erroneo');
-        mensajeErrorMotivo.style.display = "block"
-    } else{
-        inputMotivo.classList.remove('valor-ingresado-erroneo');
-        mensajeErrorMotivo.style.display = "none"
-    }
-
-    return valido;
 }
 
+// Eliminar paciente
+function eliminarPaciente(id) {
+    Swal.fire({
+        title: '¿Está seguro?',
+        text: "Esta acción eliminará al paciente de la lista de espera",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#f56565',
+        cancelButtonColor: '#718096'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let lista = obtenerListaEspera();
+            lista = lista.filter(p => p.id !== id);
+            guardarListaEspera(lista);
+            renderizarLista();
 
-function obtenerPacientesSinAtender(){
-    const listaPacientes = JSON.parse(localStorage.getItem(keyLocalStorage)) || [];
-
-    return listaPacientes.filter((paciente) => !paciente.atendido);
+            Swal.fire({
+                icon: 'success',
+                title: 'Eliminado',
+                text: 'El paciente ha sido eliminado de la lista',
+                confirmButtonColor: '#667eea'
+            });
+        }
+    });
 }
 
+function verHistorial() {
+    window.location.href = 'historial.html';
+}
 
-// Primer renderizado de lista de espera
-renderizarListaEspera(listaPacientes);
+const pacientes = [
+    {
+        id: 1,
+        nombre: 'Juan Pérez',
+        dni: '12345678',
+        motivo: 'Dolor de cabeza',
+        guardia: 'Clínica - Dr. García',
+        hora: '10:30 AM'
+    }
+];
+
+renderizarLista();

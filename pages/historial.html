@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial de pacientes</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script defer src="../js/historial.js"></script> 
 
 
@@ -23,33 +25,34 @@
     </header>
 
     <main>
-        <section class="historial-pacientes-section">
+        <section class="contenedor historial-pacientes-section">
             <h2>Historial de pacientes</h2>
             <div>
                 <p>
                     <a class="boton-historial-volver" href="../index.html">Volver al inicio</a>
                 </p>
             </div>
-            <div class="section-tabla-pacientes">
 
+            <div class="section-tabla-pacientes" id="historialLista">
                 <table class="pacientes-table" id="tabla-historial">
                     <thead>
                         <tr class="header-tabla-historial">
                             <th>Nombre completo</th>
                             <th>DNI</th>
                             <th>Motivo de consulta</th>
+                            <th>Guardia</th>
+                            <th>Fecha Horario</th>
                         </tr>
                     </thead>
-
                     <tbody id="tabla-historial-body">
-
+                        <!-- Filas de pacientes se agregarán aquí dinámicamente -->
                     </tbody>
                 </table>
             </div>
 
             <div class="eliminar-historial">
-                <button  class="boton btn-eliminar-historial" id="btn-eliminar-historial">Eliminar</button>
-            </div>
+                <button  class="boton btn-eliminar-historial" id="btn-eliminar-historial" onclick="eliminarHistorial()">Eliminar historial</button>
+            </div> 
         </section>
     </main>
 

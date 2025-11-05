@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
-* { 
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -10,25 +10,27 @@ html,
 body {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     height: 100%;
 }
 
-main { 
-    height: 100vh;
+main {
+    /* height: 100vh; */
+    flex: 1;
 }
 
 a {
     text-decoration: none;
 }
 
-h1 { 
+h1 {
     font-family: Georgia, 'Times New Roman', Times, serif;
-    color: rgb(36, 46, 161);
+    font-size: 2.2rem;
+    color: rgb(25, 36, 156);
 }
 
 h2 {
     font-family: 'Times New Roman', Times, serif;
+    font-size: 1.8rem;
     color: rgb(19, 19, 107);
     text-align: center;
 }
@@ -38,13 +40,13 @@ li,
 a,
 button,
 label,
-table { 
+table {
     font-family: 'Montserrat';
     color: #000000;
     margin-bottom: 0;
 }
 
-input { 
+input {
     height: 2.5rem;
     width: 100%;
     border: 1px solid grey;
@@ -60,11 +62,11 @@ header {
     display: flex;
     position: sticky;
     align-items: center;
-
+    padding: 1.5rem;
     justify-content: center;
     flex-wrap: wrap;
 
-    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.103);
 }
 
 
@@ -73,19 +75,27 @@ footer {
     background-color: #e1e1e1;
     text-align: center;
     padding: 1rem;
-    margin-top: 2rem;
+    margin-top: 1rem;
+    bottom: 0;
+    /* position: sticky;
+     */
 }
 
 .contenedor {
     display: flex;
     flex-direction: column;
-    width: 40vw;
-    margin: 0 auto;
+    width: 50vw;
+    margin: 1rem auto;
     gap: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.164);
+    border-radius: 1rem;
+    padding: 1rem;
 }
 
 
 /*Main*/
+
+
 .gestion-pacientes,
 .historial-pacientes-section {
     display: flex;
@@ -100,7 +110,7 @@ footer {
     gap: .5rem;
 }
 
-.boton { 
+.boton {
     background-color: #a7badf9d;
     color: rgb(0, 0, 0);
     border: none;
@@ -123,11 +133,12 @@ footer {
     text-decoration: underline;
 }
 
-.boton-historial-volver:hover { 
+.boton-historial-volver:hover {
+    transform: translateY(-2px);
     color: rgb(8, 8, 143);
 }
 
-.btn-atender-paciente:disabled { 
+.btn-atender-paciente:disabled {
     cursor: not-allowed;
     opacity: 0.5;
     box-shadow: none;
@@ -137,68 +148,158 @@ footer {
 
 /* Seccion Lista de espera */
 
-.lista-espera { 
+.lista-espera {
     display: flex;
     flex-direction: column;
     gap: .5rem;
 
 }
 
-.mensaje-cola-vacia { 
+.mensaje-cola-vacia {
+    font-size: 1.1rem;
     text-align: center;
     font-style: italic;
     color: rgb(128, 128, 128);
 }
 
-.card-paciente { 
-    background-color: rgb(241, 241, 241);
-    opacity: 0.9;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: .5rem 1rem .5rem 1rem;
+.card-paciente {
+    background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+    border-left: .4rem solid rgba(6, 20, 221, 0.726);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
     border-bottom: 1px solid #00000033;
 
 }
 
-.card-paciente:nth-child(1) {
-    background-color: #4653975b;
-    border-left: .2rem solid rgb(6, 20, 221);
-    border-radius: 10px 10px 0 0;
+.card-paciente:hover {
+    transform: scale(1.01);
 }
 
-.card-paciente:nth-last-child(1) {
-    border-radius: 0 0 10px 10px;
-    border-bottom: none;
-}
-
-
-
-.hora-ingreso{
+.paciente-header {
     display: flex;
-    gap: .2rem;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
 }
+
+.nombre-paciente {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #1d2129;
+    font-family: 'Montserrat';
+}
+
+.paciente-hora {
+    color: #4a5568;
+    font-size: 1rem;
+}
+
 .reloj {
     width: .9rem;
 }
 
-.informacion-paciente {
+/* ver que onda esta de abajo */
+.hora-ingreso {
     display: flex;
-    flex-direction: column;
-    gap: .3rem;
-    padding: .3rem;
+    gap: .2rem;
 }
-.nombre-paciente{
-    font-family: 'Montserrat';
+
+.paciente-info {
+    margin: 10px 0;
+    color: #4a5568;
+}
+
+.paciente-info p {
+    margin: .6rem 0;
     font-size: 1rem;
 }
-.dni-paciente{
-    font-size: .9rem;
+
+.tipo-guardia {
+    display: inline-block;
+    background: #365af8e3;
+    color: rgb(255, 255, 255);
+    padding: .5rem 1rem;
+    border-radius: 1rem;
+    font-size: .85rem;
+    font-weight: 600;
+    margin-top: .5rem;
+}
+
+.acciones-paciente-existente {
+    display: flex;
+    gap: 1rem;
+    flex-direction: row-reverse;
+}
+
+.btn-editar {
+    background-color: #380fccd5;
+    color: white;
+    padding: .5rem 1rem;
+    border: none;
+    border-radius: .4rem;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: #243ab3;
+    }
+}
+
+.btn-eliminar {
+    background-color: #f84949;
+    color: white;
+    padding: .5rem 1rem;
+    border: none;
+    border-radius: .4rem;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: #f10e0e;
+    }
 }
 
 
+/* Formularios */
+.swal-formulario {
+    text-align: left;
+}
 
-/* Modales */
+.txt-header-form {
+    font-size: 1rem;
+    font-style: italic;
+    color: rgb(128, 128, 128);
+    margin-bottom: 1rem;
+}
+
+.label-formulario {
+    font-weight: 450;
+    color: #000000c9;
+}
+
+.input-formulario {
+    margin: .5rem 0;
+    width: 100%;
+    /* height: 2.5rem;
+    border: 1px solid grey;
+    border-radius: .7rem;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+    style="width: 90%; margin-bottom: 15px;" */
+}
+
+
+.txt-atender-form {
+    font-size: 1.2rem;
+}
+
+/* me da pena borrar :( */
+/* Modales 
 
 .modal {
     display: none;
@@ -288,7 +389,7 @@ footer {
     background-color: #eeeeee;
     border-radius: 0 0 10px 10px;
 }
-
+*/
 
 /* Animacion */
 @-webkit-keyframes animatetop {
@@ -314,7 +415,6 @@ footer {
         opacity: 1
     }
 }
-
 
 /* Errores */
 .valor-ingresado-erroneo {
@@ -352,7 +452,7 @@ footer {
 
 
 /* Tabla de Historial */
-.pacientes-tabla { 
+.pacientes-tabla {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;

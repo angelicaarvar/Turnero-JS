@@ -1,51 +1,63 @@
-//Eventos
-let botonEliminarHistorial = document.getElementById("btn-eliminar-historial");
-botonEliminarHistorial.addEventListener("click", eliminarHistorial)
-
-//Renderizado del local Storage
-function renderizarHistorialPacientes(){
-    const tablaHistorialCuerpo = document.getElementById("tabla-historial-body");
-    tablaHistorialCuerpo.innerHTML = '';
-
-    const listaPacientes = JSON.parse(localStorage.getItem("pacientes")) || [];
-    
-    const pacientesAtendidos = listaPacientes.filter((paciente) => paciente.atendido);
-
-    if(pacientesAtendidos.length === 0){
-        document.getElementById("tabla-historial").innerHTML = '<p class="mensaje-cola-vacia">Todavía no se atendieron pacientes.</p>';
-        botonEliminarHistorial.style.display = "none";
-    }
-    
-    pacientesAtendidos.forEach((paciente) => {
-        const filaPaciente = document.createElement('tr');
-        filaPaciente.innerHTML = `
-        <td>
-            <div style="max-width: 25vw; overflow-y: auto;">
-                ${paciente.nombreCompleto}
-            </div>
-        </td>
-        <td>${paciente.dni}</td>
-        <td>
-            <div style="max-width: 25vw; overflow-y: auto;">
-                ${paciente.motivo}
-            </div>
-        </td>
-        
-        `;
-        
-        tablaHistorialCuerpo.appendChild(filaPaciente);
-    });
-}  
-
-//eliminar Historial
-function eliminarHistorial(){
-    const pacientes = JSON.parse(localStorage.getItem("pacientes")) || [];
-    const pacientesNoAtendidos = pacientes.filter((paciente) => !paciente.atendido);
-
-    localStorage.setItem("pacientes", JSON.stringify(pacientesNoAtendidos));
-
-    renderizarHistorialPacientes();
+// Obtener historial
+function obtenerHistorial() {
+    const historial = localStorage.getItem('historialPacientes');
+    return historial ? JSON.parse(historial) : [];
 }
 
+// Renderizar historial
+function renderizarHistorial() {
+    const historial = obtenerHistorial();
+    const contenedor = document.getElementById('historialLista');
+    const btnEliminarHistorial = document.getElementById('btn-eliminar-historial');
+    const tabla = document.getElementById('tabla-historial');
+    const tablaBody = document.getElementById('tabla-historial-body');
 
-renderizarHistorialPacientes();
+    if (historial.length === 0) {
+        contenedor.innerHTML = '<div class="mensaje-cola-vacia">No hay pacientes atendidos en el historial</div>';
+        tabla.style.display = "none";
+        btnEliminarHistorial.style.display = "none";
+
+        return;
+    }
+
+    const historialOrdenado = [...historial].reverse();
+    tablaBody.innerHTML = historialOrdenado.map(paciente => `    
+        <tr>
+            <td>${paciente.nombre}</td>
+            <td>${paciente.dni}</td>
+            <td>${paciente.motivo}</td>
+            <td>${paciente.guardia}</td>
+            <td>${paciente.fechaAtencion}</td>
+        </tr>
+            `).join('');
+}
+
+function eliminarHistorial() {
+    Swal.fire({
+        title: 'Eliminar historial de pacientes',
+        text: "Esta acción no se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#f56565',
+        cancelButtonColor: '#718096'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            localStorage.removeItem('historialPacientes');
+            
+            renderizarHistorial();
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Historial eliminado',
+                text: 'El historial de pacientes ha sido eliminado correctamente.',
+                confirmButtonColor: '#667eea'
+            });
+
+        }
+    });
+    
+}
+
+renderizarHistorial();
