@@ -14,7 +14,6 @@ body {
 }
 
 main {
-    /* height: 100vh; */
     flex: 1;
 }
 
@@ -77,8 +76,6 @@ footer {
     padding: 1rem;
     margin-top: 1rem;
     bottom: 0;
-    /* position: sticky;
-     */
 }
 
 .contenedor {
@@ -94,7 +91,6 @@ footer {
 
 
 /*Main*/
-
 
 .gestion-pacientes,
 .historial-pacientes-section {
@@ -147,7 +143,6 @@ footer {
 
 
 /* Seccion Lista de espera */
-
 .lista-espera {
     display: flex;
     flex-direction: column;
@@ -199,12 +194,6 @@ footer {
 
 .reloj {
     width: .9rem;
-}
-
-/* ver que onda esta de abajo */
-.hora-ingreso {
-    display: flex;
-    gap: .2rem;
 }
 
 .paciente-info {
@@ -285,135 +274,11 @@ footer {
 .input-formulario {
     margin: .5rem 0;
     width: 100%;
-    /* height: 2.5rem;
-    border: 1px solid grey;
-    border-radius: .7rem;
-    padding-left: 1rem;
-    margin-bottom: 1rem;
-    style="width: 90%; margin-bottom: 15px;" */
 }
 
 
 .txt-atender-form {
     font-size: 1.2rem;
-}
-
-/* me da pena borrar :( */
-/* Modales 
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    padding-top: 100px;
-
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-}
-
-.modal-content {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    background-color: #eeeeee;
-    margin: 0 auto;
-    padding: 0;
-    border: 1px solid #888;
-    width: 45vw;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    border-radius: 20px;
-
-    -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
-    animation-duration: 0.4s
-}
-
-.close {
-    color: #000000;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: rgb(95, 106, 255);
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.modal-header {
-    border-radius: 10px 10px 0 0;
-    text-align: left;
-    padding: 1rem;
-    align-content: flex-start;
-    background-color: #eeeeee;
-    color: white;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.26);
-}
-
-.modal-header h2 {
-    font-family: 'Montserrat';
-    font-size: 1.4rem;
-    color: #000b4b;
-    text-align: start;
-    padding-bottom: .5rem;
-}
-
-.modal-body {
-    font-size: 1.2rem;
-    padding: 1rem 1rem .3rem 1rem;
-    align-items: flex-start;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.26);
-
-}
-
-.elemento-formulario {
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 1rem;
-    width: 100%;
-    gap: .25rem;
-}
-
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    padding: 1rem;
-    background-color: #eeeeee;
-    border-radius: 0 0 10px 10px;
-}
-*/
-
-/* Animacion */
-@-webkit-keyframes animatetop {
-    from {
-        top: -300px;
-        opacity: 0
-    }
-
-    to {
-        top: 0;
-        opacity: 1
-    }
-}
-
-@keyframes animatetop {
-    from {
-        top: -300px;
-        opacity: 0
-    }
-
-    to {
-        top: 0;
-        opacity: 1
-    }
 }
 
 /* Errores */
@@ -432,14 +297,24 @@ footer {
     padding-left: .5rem;
 }
 
+@media (max-width: 600px) {
+    .contenedor{
+        width: 85vw;
+    }
 
-/* Seccion Historial */
-#tabla-historial-body {
-    border: 1px solid rgba(0, 0, 0, 0.377);
+    .boton-container {
+        flex-direction: column;
+        width: 100%;
+    }
+
 }
 
-.header-tabla-historial {
-    border: 1px solid rgb(0, 0, 0);
+
+
+
+/* Seccion Historial */
+.btn-eliminar-historial {
+    background-color: #ce362b70;
 }
 
 .btn-eliminar-historial:hover {
@@ -447,19 +322,15 @@ footer {
     color: white;
 }
 
-
-
-
-
 /* Tabla de Historial */
-.pacientes-tabla {
+.pacientes-table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
 }
 
 .header-tabla-historial {
-    background-color: hsla(0, 0%, 0%, 0.781);
+    background-color: hsla(239, 100%, 16%, 0.89);
     color: rgb(236, 236, 236);
     font-weight: 400;
 }
@@ -473,4 +344,11 @@ th {
 
 tr:nth-child(even) {
     background-color: #dddddd;
+}
+
+@media (max-width: 600px) {
+    .section-tabla-pacientes {
+        overflow-x: auto;
+        width: 100%;
+    }
 }
