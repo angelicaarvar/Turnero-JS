@@ -1,10 +1,9 @@
-// Obtener historial
 function obtenerHistorial() {
     const historial = localStorage.getItem('historialPacientes');
     return historial ? JSON.parse(historial) : [];
 }
 
-// Renderizar historial
+
 function renderizarHistorial() {
     const historial = obtenerHistorial();
     const contenedor = document.getElementById('historialLista');
@@ -16,7 +15,6 @@ function renderizarHistorial() {
         contenedor.innerHTML = '<div class="mensaje-cola-vacia">No hay pacientes atendidos en el historial</div>';
         tabla.style.display = "none";
         btnEliminarHistorial.style.display = "none";
-
         return;
     }
 

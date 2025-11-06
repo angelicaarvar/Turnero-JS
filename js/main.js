@@ -1,11 +1,7 @@
 const relojIconoUrl = '"http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M528 320C528 434.9 434.9 528 320 528C205.1 528 112 434.9 112 320C112 205.1 205.1 112 320 112C434.9 112 528 205.1 528 320zM64 320C64 461.4 178.6 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320zM296 184L296 320C296 328 300 335.5 306.7 340L402.7 404C413.7 411.4 428.6 408.4 436 397.3C443.4 386.2 440.4 371.4 429.3 364L344 307.2L344 184C344 170.7 333.3 160 320 160C306.7 160 296 170.7 296 184z"'
 
 
-// Generar ID alfanumérico único
-// function generarId() {
-//     return 'PAC-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 11);
-// }
-
+//generar id para cada paciente
 function generarId() {
 let contador = Number(localStorage.getItem('contadorId')) || 0;
 contador++;
@@ -13,35 +9,31 @@ localStorage.setItem('contadorId', contador);
 return "PAC-" + contador;
 }
 
-// Obtener lista de espera
+
 function obtenerListaEspera() {
     const lista = localStorage.getItem('listaEspera');
     return lista ? JSON.parse(lista) : [];
 }
 
-// Guardar lista de espera
 function guardarListaEspera(lista) {
     localStorage.setItem('listaEspera', JSON.stringify(lista));
 }
 
-// Obtener historial
 function obtenerHistorial() {
     const historial = localStorage.getItem('historialPacientes');
     return historial ? JSON.parse(historial) : [];
 }
 
-// Guardar historial
 function guardarHistorial(historial) {
     localStorage.setItem('historialPacientes', JSON.stringify(historial));
 }
 
-// Validar nombre (solo letras y espacios)
+// para la validacion de nombres y dni tuve que indagar en fuentes externas y temrine usando expresiones regulares.
 function validarNombre(nombre) {
     const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
     return regex.test(nombre) && nombre.trim().length > 0;
 }
 
-// Validar DNI (solo números, 7-8 dígitos)
 function validarDNI(dni) {
     const regex = /^\d{7,8}$/;
     return regex.test(dni);
@@ -52,9 +44,8 @@ function dniExiste(dni) {
     return listaEspera.some(p => p.dni === dni);
 }
 
-// Renderizar lista de pacientes
-function renderizarLista() {
 
+function renderizarLista() {
     const lista = obtenerListaEspera();
     const contenedor = document.getElementById('listaPacientes');
 
@@ -62,7 +53,8 @@ function renderizarLista() {
         contenedor.innerHTML = '<div class="mensaje-cola-vacia">No hay pacientes en la lista de espera</div>';
         return;
     }
-    /*por que aca nmo va el else no entiendo */
+
+
     contenedor.innerHTML = lista.map(paciente => `
                 <div class="card-paciente">
 
@@ -92,7 +84,7 @@ function renderizarLista() {
             `).join('');
 }
 
-// Agregar paciente
+// Para que el formulario cambie de contenido dependiendo si se edita o agrega tambien tuve que buscar en fuentes externas, y preferi poner aqui las posibles guardias para no ensuciar otro lado, porque solo se usa aqui
 function agregarPaciente(pacienteEditar = null) {
     const esEdicion = pacienteEditar !== null;
 
@@ -135,27 +127,24 @@ function agregarPaciente(pacienteEditar = null) {
             const motivo = document.getElementById('motivo').value.trim();
             const guardia = document.getElementById('guardia').value;
 
-            // Validar campos vacíos
+            
             if (!nombre || !dni || !motivo || !guardia) {
                 Swal.showValidationMessage('Por favor complete todos los campos');
                 return false;
             }
 
-            // Validar nombre (sin números)
             if (!validarNombre(nombre)) {
                 Swal.showValidationMessage('El nombre no puede contener números ni caracteres especiales');
                 return false;
             }
 
-            // Validar formato DNI
             if (!validarDNI(dni)) {
                 Swal.showValidationMessage('El DNI debe contener solo números (7-8 dígitos)');
                 return false;
             }
 
-            // Verificar DNI duplicado (solo si no es edición)
             if (!esEdicion && dniExiste(dni)) {
-                Swal.showValidationMessage('Este DNI ya está registrado en el sistema');
+                Swal.showValidationMessage('Este DNI ya se encuentra en la lista de espera.');
                 return false;
             }
 
@@ -165,8 +154,8 @@ function agregarPaciente(pacienteEditar = null) {
         if (result.isConfirmed) {
             const lista = obtenerListaEspera();
 
+            // Actualiza el paciente ya existente, sino agrega uno nuevo. aca tambien tuve que buscar sobre todo en el findIndex
             if (esEdicion) {
-                // Actualizar paciente existente
                 const index = lista.findIndex(p => p.id === pacienteEditar.id);
                 if (index !== -1) {
                     lista[index] = {
@@ -177,7 +166,6 @@ function agregarPaciente(pacienteEditar = null) {
                     };
                 }
             } else {
-                // Agregar nuevo paciente
                 const nuevoPaciente = {
                     id: generarId(),
                     nombre: result.value.nombre,
@@ -202,7 +190,6 @@ function agregarPaciente(pacienteEditar = null) {
     });
 }
 
-// Atender paciente
 function atenderPaciente() {
     const lista = obtenerListaEspera();
 
@@ -252,7 +239,6 @@ function atenderPaciente() {
     });
 }
 
-// Editar paciente
 function editarPaciente(id) {
     const lista = obtenerListaEspera();
     const paciente = lista.find(p => p.id === id);
@@ -262,14 +248,13 @@ function editarPaciente(id) {
     }
 }
 
-// Eliminar paciente
 function eliminarPaciente(id) {
     Swal.fire({
         title: '¿Está seguro?',
-        text: "Esta acción eliminará al paciente de la lista de espera",
+        text: "Esta acción eliminará al paciente de la lista de espera y no se puede deshacer.",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Sí, eliminar',
+        confirmButtonText: 'Eliminar',
         cancelButtonText: 'Cancelar',
         confirmButtonColor: '#f56565',
         cancelButtonColor: '#718096'
@@ -293,16 +278,5 @@ function eliminarPaciente(id) {
 function verHistorial() {
     window.location.href = 'historial.html';
 }
-
-const pacientes = [
-    {
-        id: 1,
-        nombre: 'Juan Pérez',
-        dni: '12345678',
-        motivo: 'Dolor de cabeza',
-        guardia: 'Clínica - Dr. García',
-        hora: '10:30 AM'
-    }
-];
 
 renderizarLista();
